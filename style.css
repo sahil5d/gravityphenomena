@@ -1,0 +1,504 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #0e1013;
+  color: #dcdfe6;
+  font-family: 'SF Mono', 'JetBrains Mono', 'Menlo', 'Consolas', monospace;
+  font-size: 12px;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+#thescene {
+  width: 100vw;
+  height: 100vh;
+}
+
+canvas,
+canvas:focus {
+  outline: none;
+  border: none;
+  display: block;
+}
+
+/* Scientific Instrument HUD */
+#hud {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  width: 372px;
+  max-height: calc(100vh - 28px);
+  overflow-y: auto;
+  background: rgba(24, 26, 31, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid #343842;
+  border-radius: 3px;
+  padding: 12px 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+  user-select: none;
+}
+
+#hud.collapsed #hud-body {
+  display: none;
+}
+
+#hud.collapsed .hud-top {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+/* Header */
+.hud-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 9px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #2b2f37;
+}
+
+.hud-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hud-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e2e6f0;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+}
+
+.hud-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #f0f3f8;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.hud-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hud-code-link {
+  font-size: 11px;
+  color: #9ba3b2;
+  text-decoration: none;
+  padding: 2px 6px;
+  border: 1px solid #343942;
+  border-radius: 2px;
+  background: #202329;
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+}
+
+.hud-code-link:hover {
+  color: #ffffff;
+  border-color: #555c6a;
+  background: #292d35;
+}
+
+.icon-btn {
+  padding: 1px 6px;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+  background: #202329;
+  border: 1px solid #343942;
+  color: #9ba3b2;
+}
+
+/* Velocity Hero Card */
+.vel-box {
+  background: #1f2228;
+  border: 1px solid #323640;
+  border-radius: 2px;
+  padding: 9px 10px;
+  margin-bottom: 8px;
+}
+
+.vel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 7px;
+}
+
+.vel-label {
+  font-size: 10px;
+  color: #8b92a0;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.vel-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.vel-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+
+.vel-unit {
+  font-size: 11px;
+  color: #8b92a0;
+}
+
+.vel-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.dv-badge {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #e4e8f0;
+  background: #282c34;
+  border: 1px solid #3c424e;
+  border-radius: 2px;
+  padding: 2px 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.v0-sub {
+  font-size: 10px;
+  color: #828997;
+  font-variant-numeric: tabular-nums;
+}
+
+#hud-sparkline {
+  width: 100%;
+  height: 54px;
+  background: #14161a;
+  border: 1px solid #2b2f38;
+  border-radius: 2px;
+  display: block;
+}
+
+/* Telemetry Row */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.stat-item {
+  background: #1f2228;
+  border: 1px solid #2f333c;
+  border-radius: 2px;
+  padding: 6px 9px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.stat-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-name {
+  font-size: 9.5px;
+  color: #868d9b;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.stat-num {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #e4e8f0;
+  margin-top: 3px;
+  font-variant-numeric: tabular-nums;
+}
+
+.time-bar-bg {
+  width: 100%;
+  height: 3px;
+  background: #14161a;
+  border-radius: 1px;
+  margin-top: 5px;
+  overflow: hidden;
+}
+
+.time-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: #8e97a8;
+}
+
+/* Conservation Table */
+.motionstats-table {
+  background: #1f2228;
+  border: 1px solid #2f333c;
+  border-radius: 2px;
+  padding: 7px 9px;
+  margin-bottom: 9px;
+}
+
+.motionstats-header,
+.motionstats-row {
+  display: grid;
+  grid-template-columns: 1.65fr 0.78fr 0.78fr 0.78fr;
+  align-items: center;
+  gap: 5px;
+}
+
+.motionstats-header {
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #2d313a;
+}
+
+.motionstats-col-left {
+  font-size: 9.5px;
+  color: #7d8492;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.motionstats-col-title {
+  font-size: 9.5px;
+  color: #868d9b;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.motionstats-row {
+  padding: 2.5px 0;
+}
+
+.motionstats-total-row {
+  margin-top: 3px;
+  padding-top: 5px;
+  border-top: 1px solid #2d313a;
+}
+
+.motionstats-total-row .motionstats-label,
+.motionstats-total-row .motionstats-val {
+  color: #ffffff;
+}
+
+.motionstats-label {
+  font-size: 10px;
+  color: #9ba2b0;
+  white-space: nowrap;
+}
+
+.motionstats-val {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #dfe3ec;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.motionstats-span-total {
+  grid-column: 2 / 5;
+}
+
+/* Section Labels */
+.section-label {
+  font-size: 9.5px;
+  color: #828997;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 4px;
+}
+
+/* Trajectory List */
+.config-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 9px;
+}
+
+.config-list button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+}
+
+.cfg-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+  font-weight: 700;
+  background: #1b1d22;
+  border: 1px solid #363b45;
+  border-radius: 2px;
+  color: #9ba2b0;
+  flex-shrink: 0;
+}
+
+button.active .cfg-num {
+  background: #dfe3ec;
+  color: #16181c;
+  border-color: #dfe3ec;
+}
+
+.cfg-text {
+  flex: 1;
+  font-size: 11px;
+}
+
+.cfg-tag {
+  font-size: 9.5px;
+  color: #7d8492;
+  font-variant-numeric: tabular-nums;
+}
+
+button.active .cfg-tag {
+  color: #c2c8d4;
+}
+
+/* Parameter Matrix */
+.param-matrix {
+  background: #1f2228;
+  border: 1px solid #2f333c;
+  border-radius: 2px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 9px;
+}
+
+.param-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.param-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.param-title {
+  font-size: 10px;
+  color: #c5cad6;
+}
+
+.param-sub {
+  font-size: 9.5px;
+  color: #7d8492;
+  font-variant-numeric: tabular-nums;
+}
+
+.seg-group {
+  display: flex;
+  background: #15171b;
+  border: 1px solid #30343e;
+  border-radius: 2px;
+  padding: 1px;
+  gap: 1px;
+  width: 168px;
+}
+
+.seg-group button {
+  flex: 1;
+  text-align: center;
+  border: none;
+  background: transparent;
+  padding: 4px 0;
+  font-size: 10.5px;
+  border-radius: 1px;
+}
+
+.seg-group button:hover {
+  background: #23272f;
+}
+
+.seg-group button.active {
+  background: #3a3f4b;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* Transport Controls */
+.hud-controls {
+  display: flex;
+  gap: 5px;
+}
+
+.hud-controls button {
+  flex: 1;
+  text-align: center;
+  padding: 6px 8px;
+  font-weight: 600;
+}
+
+/* Base Buttons */
+button {
+  background: #23262d;
+  color: #c2c7d2;
+  border: 1px solid #363a44;
+  border-radius: 2px;
+  padding: 5px 8px;
+  font-family: inherit;
+  font-size: 11px;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.1s, color 0.1s, border-color 0.1s;
+}
+
+button:focus,
+button:focus-visible {
+  outline: none;
+}
+
+button:hover {
+  background: #2c3039;
+  color: #ffffff;
+}
+
+button.active {
+  background: #323742;
+  border-color: #7c8596;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* Camera Hint Footer */
+#cam-hint {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  font-size: 10.5px;
+  color: #6c7382;
+  background: rgba(20, 22, 26, 0.75);
+  border: 1px solid #292d35;
+  border-radius: 2px;
+  padding: 4px 9px;
+  pointer-events: none;
+  user-select: none;
+}

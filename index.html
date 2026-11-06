@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Dynamical Friction</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- microsoft analytics -->
+  <script type="text/javascript">
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+      t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+    })(window, document, "clarity", "script", "z83sao2ho4");
+  </script>
+</head>
+
+<body>
+
+  <div id="thescene"></div>
+
+  <div id="hud">
+    <!-- Top Header -->
+    <div class="hud-top">
+      <div class="hud-brand">
+        <!-- <span class="hud-dot"></span> -->
+        <span class="hud-title">Dynamical Friction</span>
+      </div>
+      <div class="hud-top-actions">
+        <a class="hud-code-link" href="https://github.com/sahil5d/gravityphenomena" target="_blank" rel="noopener">Code ↗</a>
+        <button id="btn-collapse" class="icon-btn" title="Collapse / Expand HUD">−</button>
+      </div>
+    </div>
+
+    <div id="hud-body">
+      <!-- Velocity & Sparkline Hero Card -->
+      <div class="vel-box">
+        <div class="vel-header">
+          <div>
+            <div class="vel-label">MainStar Speed</div>
+            <div class="vel-value-row">
+              <span class="vel-value" id="hud-vel">1.3000</span>
+              <span class="vel-unit">km/s</span>
+            </div>
+          </div>
+          <div class="vel-meta">
+            <div class="dv-badge" id="hud-dv">+0.00%</div>
+            <div class="v0-sub">v<sub>0</sub> = <span id="hud-v0">1.3</span> km/s</div>
+          </div>
+        </div>
+        <canvas id="hud-sparkline" width="336" height="54"></canvas>
+      </div>
+
+      <!-- Position & Time Telemetry Row -->
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-top">
+            <span class="stat-name">MainStar Pos (ly)</span>
+          </div>
+          <div class="stat-num" id="hud-x">x = -36.0</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-top">
+            <span class="stat-name">Time (Myr)</span>
+          </div>
+          <div class="stat-num" id="hud-step">0.00 / 19.8</div>
+          <div class="time-bar-bg">
+            <div class="time-bar-fill" id="hud-time-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conservation Table -->
+      <div class="motionstats-table">
+        <div class="motionstats-header">
+          <div class="motionstats-col-left">Conservation</div>
+          <div class="motionstats-col-title">MainStar</div>
+          <div class="motionstats-col-title">8000-star</div>
+          <div class="motionstats-col-title">Total</div>
+        </div>
+        <div class="motionstats-row">
+          <div class="motionstats-label">Momentum</div>
+          <div class="motionstats-val" id="hud-mom-star">2.60e-3</div>
+          <div class="motionstats-val" id="hud-mom-group">0.00e-3</div>
+          <div class="motionstats-val" id="hud-mom-total">2.60e-3</div>
+        </div>
+        <div class="motionstats-row">
+          <div class="motionstats-label">Kinetic exergy (J)</div>
+          <div class="motionstats-val" id="hud-ke-star">1.01e+39</div>
+          <div class="motionstats-val" id="hud-ke-group">0.00e+39</div>
+          <div class="motionstats-val" id="hud-ke-total">1.01e+39</div>
+        </div>
+        <div class="motionstats-row">
+          <div class="motionstats-label">Gravitational energy (J)</div>
+          <div class="motionstats-val motionstats-span-total" id="hud-pe-total">-5.15e+38</div>
+        </div>
+        <div class="motionstats-row motionstats-total-row">
+          <div class="motionstats-label">Total ergy (J)</div>
+          <div class="motionstats-val motionstats-span-total" id="hud-te-total">4.93e+38</div>
+        </div>
+      </div>
+
+      <!-- Config Selector -->
+      <div class="section-label">Config</div>
+      <div class="config-list">
+        <button id="cfg-1" class="active">
+          <span class="cfg-num">1</span>
+          <span class="cfg-text">Start left-of-center, go right</span>
+          <span class="cfg-tag">-36 ly</span>
+        </button>
+        <button id="cfg-2">
+          <span class="cfg-num">2</span>
+          <span class="cfg-text">Start center of grid, go right</span>
+          <span class="cfg-tag">0 ly</span>
+        </button>
+        <button id="cfg-3">
+          <span class="cfg-num">3</span>
+          <span class="cfg-text">Start right-of-center, go right</span>
+          <span class="cfg-tag">+36 ly</span>
+        </button>
+        <button id="cfg-4">
+          <span class="cfg-num">4</span>
+          <span class="cfg-text">Orbit center mass, spiral in</span>
+          <span class="cfg-tag">r = 24 ly</span>
+        </button>
+      </div>
+
+      <!-- Parameter Matrix (Velocity, Mass, Grid Size) -->
+      <div class="param-matrix">
+        <div class="param-row">
+          <div class="param-info">
+            <span class="param-title">MainStar Velocity</span>
+            <span class="param-sub" id="hud-param-vel">1.3 km/s</span>
+          </div>
+          <div class="seg-group">
+            <button id="vel-1" class="active">1x</button>
+            <button id="vel-2">3x</button>
+            <button id="vel-3">9x</button>
+          </div>
+        </div>
+
+        <div class="param-row">
+          <div class="param-info">
+            <span class="param-title">GridStars Mass</span>
+            <span class="param-sub" id="hud-param-mass">0.15 M<sub>☉</sub></span>
+          </div>
+          <div class="seg-group">
+            <button id="mass-1" class="active">1x</button>
+            <button id="mass-2">1/3x</button>
+            <button id="mass-3">1/9x</button>
+          </div>
+        </div>
+
+        <div class="param-row">
+          <div class="param-info">
+            <span class="param-title">Grid r Size</span>
+            <span class="param-sub" id="hud-param-grid">±30.4 ly</span>
+          </div>
+          <div class="seg-group">
+            <button id="grid-1" class="active">1x</button>
+            <button id="grid-2">3x</button>
+            <button id="grid-3">9x</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transport & View Controls -->
+      <div class="hud-controls">
+        <button id="btn-restart">↻ Restart</button>
+        <button id="btn-pause">⏸ Pause</button>
+        <button id="btn-cam" title="Reset camera view">⌖ View</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="cam-hint">Drag: Orbit &nbsp;·&nbsp; Scroll: Zoom &nbsp;·&nbsp; Right-drag: Pan</div>
+
+  <script src="three-0.187.0.min.js"></script>
+  <script src="three-OrbitControls-0.187.0.min.js"></script>
+  <script src="lib.js"></script>
+  <script src="config.js"></script>
+  <script src="calc.js"></script>
+  <script src="logic.js"></script>
+
+</body>
+
+</html>
