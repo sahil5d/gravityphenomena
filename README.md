@@ -1,9 +1,11 @@
 ### Dynamical Friction
 
-3D Sim of Dynamical Friction (`friction_Chandrasekhar`)
+3D Sim of Dynamical Friction (friction_Chandrasekhar)
 - 1 main star moving rightward (+x)
 - 20 x 20 x 20 grid of initially motionless stars
 - Classic gravity: a = G * M / r^2 (step with Velocity Verlet)
+
+![dynamical friction](screenshot1.png)
 
 ---
 ### How dynamical friction works
